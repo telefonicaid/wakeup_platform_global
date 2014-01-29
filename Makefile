@@ -27,7 +27,7 @@ dev: clean check_style build tests
 
 version.info:
 	@echo "Getting version information from GIT ..."
-	@$(GIT) describe --all > src/version.info
+	@$(GIT) describe --all --always > src/version.info
 	@echo " - Version = " `cat src/version.info`
 
 provision_data:
