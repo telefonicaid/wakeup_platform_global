@@ -25,6 +25,6 @@ module.exports.entrypoint = function router_about(parsedURL, body, req, res) {
   res.write('</head><body>');
   res.write('<h1>WakeUp mobile platform</h1>');
   res.write('<h2>Global node ' + process.configuration._version + '</h2>');
-  res.write('© Telefónica Digital, 2013<br />');
+  res.write('© Telefónica Digital, 2014<br />');
   res.write('</body></html>');
 };
