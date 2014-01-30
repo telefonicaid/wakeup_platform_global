@@ -1,6 +1,6 @@
 *.log
 node_modules
-src/shared_libs/
+shared_libs
 version.info
 shared_*.js
 output
