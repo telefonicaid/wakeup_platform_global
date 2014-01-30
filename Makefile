@@ -30,8 +30,9 @@ version.info:
 	@$(GIT) describe --all --always > src/version.info
 	@echo " - Version = " `cat src/version.info`
 
-clean: clean_global clean_src clean_tests
+clean: clean_checker clean_global clean_src clean_tests
 	@echo "Cleaning ..."
+	@rm -rf output
 
 clean_src:
 	@echo "Cleaning common src resources ..."
@@ -42,14 +43,19 @@ clean_global:
 	@rm -f src/global/version.info
 	@rm -rf src/global/shared_libs
 	@rm -f src/global/routers/shared*
-	@rm -rf output
+	@find . -name "*log" -exec rm -f {} \;
+
+clean_checker:
+	@echo "Cleaning checker server instance ..."
+	@rm -f src/checker/version.info
+	@rm -rf src/checker/shared_libs
 	@find . -name "*log" -exec rm -f {} \;
 
 clean_tests:
 	@echo "Cleaning tests auxiliar files ..."
 	@rm -rf tests/node_modules
 
-build: version.info build_src build_global
+build: version.info build_src build_global build_checker
 	@echo "Building ..."
 
 build_src:
@@ -59,7 +65,13 @@ build_src:
 build_global: version.info build_src
 	@echo "Building global server instance ..."
 	@cp -rfl common/libs src/global/shared_libs
+	@cp -rfl src/common/libs/* src/global/shared_libs
 	@cd common/routers/; for r in `ls *js`; do ln -f $$r ../../src/global/routers/shared_$$r; done;
+
+build_checker: version.info build_src
+	@echo "Building checker server instance ..."
+	@cp -rfl common/libs src/checker/shared_libs
+	@cp -rfl src/common/libs/* src/checker/shared_libs
 
 install: build
 	@echo "Putting global server into output directory ..."
@@ -67,7 +79,9 @@ install: build
 	@cp -rfl src/* output/
 	@find output -name README.md -exec rm {} \;
 	@echo "cd global; node start.js $1" > output/run_global.sh
+	@echo "cd checker; node start.js $1" > output/run_checker.sh
 	@chmod +x output/run_global.sh
+	@chmod +x output/run_checker.sh
 
 check_style:
 	@echo "Checking code style rules ..."

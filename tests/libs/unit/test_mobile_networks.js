@@ -7,7 +7,7 @@
  */
 
 require('./configuration.js');
-var mn = require('../../../src/global/libs/mobile_networks'),
+var mn = require('../../../src/global/shared_libs/mobile_networks'),
     assert = require('assert'),
     vows = require('vows'),
     net = require('net');
@@ -194,6 +194,26 @@ vows.describe('Mobile Networks tests (bad payload)').addBatch({
     },
     'Error returned': function(err, data) {
       assert.isNotNull(data);
+    }
+  },
+
+  'Get all networks': {
+    topic: function() {
+      mn.getNetworksWithLocalNode(this.callback);
+    },
+    'No error is returned': function(err, data) {
+      assert.isNull(err);
+    },
+    'Networks array returned': function(err, data) {
+      assert.isArray(data);
+    },
+    'If some network is returned the payload is correct': function(err, data) {
+      if (data.length > 0) {
+        assert.isString(data[0].name);
+        assert.isString(data[0].info);
+      } else {
+        assert.isTrue(true);
+      }
     }
   }
 }).export(module);

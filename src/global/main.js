@@ -1,6 +1,6 @@
 /* jshint node: true */
 /**
- * PUSH Notification server
+ * Wake Up Platform
  * (c) Telefonica Digital, 2013 - All rights reserved
  * License: GNU Affero V3 (see LICENSE file)
  * Fernando Rodríguez Sela <frsela@tid.es>
@@ -9,7 +9,7 @@
 var config = require('./shared_libs/configuration'),
     log = require('./shared_libs/logger'),
     plugins_loader = require('./shared_libs/plugins_loader'),
-    mn = require('./libs/mobile_networks'),
+    mn = require('./shared_libs/mobile_networks'),
     request = require('request');
     ListenerHttp = require('./shared_libs/listener_http').ListenerHttp;
 
