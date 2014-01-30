@@ -15,7 +15,7 @@ var routers = {};
 vows.describe('HTTP routers tests').addBatch({
   'HTTP routers metadata requirements': {
     'topic': function loadRouters() {
-      var routerModules = fs.readdirSync('../../src/routers');
+      var routerModules = fs.readdirSync('../../src/global/routers');
       var numberOfRouters = 0;
       for (var i = 0; i < routerModules.length; i++) {
         if (routerModules[i].substr(-2) === 'js') {

@@ -1,0 +1,3 @@
+make build_checker
+cd src/checker
+node start.js $1

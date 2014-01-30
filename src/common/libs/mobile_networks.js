@@ -10,7 +10,7 @@
 
 var config = process.configuration,
     redis = require('redis'),
-    helpers = require('../shared_libs/helpers'),
+    helpers = require('./helpers'),
     range_check = require('range_check');
 
 module.exports = (function mobile_networks() {
@@ -76,6 +76,26 @@ module.exports = (function mobile_networks() {
     });
   }
 
+  function getAllNetworks(callback) {
+    client.hgetall('networks', callback);
+  }
+
+  function enableNetwork(networkName) {
+    getNetworkByNetID(networkName, function(err, data) {
+      if (err) return;
+      data.offline = false;
+      client.hset('networks', networkName, JSON.stringify(data));
+    });
+  }
+
+  function disableNetwork(networkName) {
+    getNetworkByNetID(networkName, function(err, data) {
+      if (err) return;
+      data.offline = true;
+      client.hset('networks', networkName, JSON.stringify(data));
+    });
+  }
+
   return {
     getNetwork: function(netid, callback) {
       callback = helpers.checkCallback(callback);
@@ -129,6 +149,42 @@ module.exports = (function mobile_networks() {
         }
         callback(null, data);
       });
+    },
+
+    // Returns an array with all networks with a local node in them
+    getNetworksWithLocalNode: function(callback) {
+      if (typeof(callback) != 'function') {
+        return;
+      }
+      getAllNetworks(function(err, networks) {
+        if (err)
+          return callback(err);
+
+        // Convert to an array
+        var nets = [];
+        var k = Object.keys(networks);
+        for (var i = 0; i < k.length; i++) {
+          try {
+            var json = JSON.parse(networks[k[i]]);
+          } catch(e) {
+            log.debug('mobile_networks: Error parsing network data');
+          }
+          nets.push({
+            name: k[i],
+            info: json
+          });
+        }
+        callback(null, nets);
+      });
+    },
+
+    // Enable/Disable network status
+    changeNetworkStatus: function(networkName, networkStatus) {
+      if (networkStatus) {
+        enableNetwork(networkName);
+      } else {
+        disableNetwork(networkName);
+      }
     }
   };
 })();
