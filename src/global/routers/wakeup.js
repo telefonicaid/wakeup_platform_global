@@ -69,13 +69,24 @@ function processWakeUpQuery(paramsString, request, response, cb) {
 
 module.exports.entrypoint =
   function router_wakeupV1(parsedURL, body, request, response, cb) {
-    if (request.method !== 'POST') {
+    switch (request.method) {
+    case 'POST':
+      processWakeUpQuery(body, request, response, cb);
+      break;
+
+    case 'OPTIONS':
+      // CORS support
+      log.debug('WU_ListenerHTTP_WakeUpRouter --> Received an OPTIONS method');
+      response.setHeader('Access-Control-Allow-Origin', '*');
+      response.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      response.statusCode = 200;
+      break;
+
+    default:
       response.setHeader('Content-Type', 'text/plain');
       response.statusCode = 405;
       response.write('Bad method. Only POST is allowed');
       log.debug('WU_ListenerHTTP_WakeUpRouter --> Bad method - ' +
         request.method);
-    } else {
-      processWakeUpQuery(body, request, response, cb);
     }
   };
