@@ -33,7 +33,7 @@ function checkRanges(range) {
   }
 }
 
-vows.describe('Mobile Networks tests (bad payload)').addBatch({
+vows.describe('Mobile Networks tests').addBatch({
   'Getting invalid operator': {
     topic: function() {
       mn.getOperator({mcc: '000', mnc: '00'}, this.callback);

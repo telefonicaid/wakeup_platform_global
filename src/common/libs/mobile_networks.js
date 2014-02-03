@@ -166,7 +166,7 @@ module.exports = (function mobile_networks() {
         for (var i = 0; i < k.length; i++) {
           try {
             var json = JSON.parse(networks[k[i]]);
-          } catch(e) {
+          } catch (e) {
             log.debug('mobile_networks: Error parsing network data');
           }
           nets.push({
