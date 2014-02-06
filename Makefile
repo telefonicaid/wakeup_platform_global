@@ -36,7 +36,6 @@ clean: clean_config clean_global clean_src clean_tests
 
 clean_config:
 	@echo "Cleaning generated config files ..."
-	@rm -f src/operators.json
 	@rm -f src/networks.json
 
 clean_src:
@@ -58,11 +57,6 @@ build: version.info build_config build_src build_global
 	@echo "Building ..."
 
 build_config:
-	@echo "Generating operators file ..."
-	@cd utils; ./generate_operators_configfile.sh
-	@mv utils/operators.json src/operators.json
-	@echo "Done!"
-
 	@echo "Generating networks file ..."
 	@echo "{" > src/networks.json
 	@echo '  "214-07": { "host": "http://localhost:9000", "range": "10.0.0.0/8", "network": "214-07", "offline": true }' >> src/networks.json

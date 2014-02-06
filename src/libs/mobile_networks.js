@@ -9,20 +9,17 @@
 
 'use strict';
 
-var operators = require('../operators.json'),
-    networks = require('../networks.json'),
-    range_check = require('range_check');
+var range_check = require('range_check');
 
-module.exports = (function mobile_networks() {
+var mn = function mobile_networks(networksPath) {
+  var networks = require(networksPath);
+
   function getNetwork(netid) {
     var res = networks[netid];
     if (!res) {
       return null;
     }
-    return {
-      net: res,
-      MNO: operators[res.network]
-    };
+    return res;
   }
 
   function getAllNetworks(callback) {
@@ -60,9 +57,9 @@ module.exports = (function mobile_networks() {
       }
 
       // Client IP is out of the mobile network
-      if (!range_check.in_range(deviceip, network.net.range)) {
+      if (!range_check.in_range(deviceip, network.range)) {
         return { error: 'Client IP (' + deviceip +
-          ') is out of the mobile network range - ' + network.net.range };
+          ') is out of the mobile network range - ' + network.range };
       }
 
       return network;
@@ -88,4 +85,8 @@ module.exports = (function mobile_networks() {
         // TODO
     }
   };
-})();
+};
+
+module.exports = function(networksPath) {
+  return mn(networksPath);
+};

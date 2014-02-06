@@ -10,7 +10,7 @@
 var config = require('./shared_libs/configuration'),
     log = require('./shared_libs/logger'),
     plugins_loader = require('./shared_libs/plugins_loader'),
-    mn = require('./libs/mobile_networks'),
+    mn = require('./libs/mobile_networks')('../networks.json'),
     request = require('request');
     ListenerHttp = require('./shared_libs/listener_http').ListenerHttp;
 
@@ -31,7 +31,7 @@ WU_Global_Server.prototype = {
       return;
     }
 
-    var URL = networkdata.net.host + '/wakeup?ip=' + wakeupdata.ip +
+    var URL = networkdata.host + '/wakeup?ip=' + wakeupdata.ip +
       '&port=' + wakeupdata.port;
     if (wakeupdata.proto) {
       URL += '&proto=' + wakeupdata.proto;
