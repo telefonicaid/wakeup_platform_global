@@ -77,7 +77,7 @@ var mn = function mobile_networks(networksPath) {
       } else {
         disableNetwork(networkName);
       }
-    },
+    }
   };
 };
 

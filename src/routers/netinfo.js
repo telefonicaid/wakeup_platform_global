@@ -23,7 +23,7 @@ module.exports.entrypoint = function netInfo(parsedURL, body, req, res) {
 
   var result = [];
 
-  for (var i=0; i < netids.length; i++) {
+  for (var i = 0; i < netids.length; i++) {
     result.push({
       netid: netids[i],
       mccmnc: networks[netids[i]].network,
