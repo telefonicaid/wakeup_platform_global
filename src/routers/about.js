@@ -7,6 +7,8 @@
  * Guillermo López Leal <gll at tid dot es>
  */
 
+var log = require('../shared_libs/logger');
+
 module.exports.info = {
   name: 'aboutRouter',
   type: 'router',
@@ -18,6 +20,10 @@ module.exports.info = {
 };
 
 module.exports.entrypoint = function router_about(parsedURL, body, req, res) {
+  // <tracking-id> -- about -- <DN=Name> -- <external-ip>
+  log.info(Date.now() + ' -- ' + req.headers['x-tracking-id'] +
+    ' -- about -- ' + req.headers['x-client-cert-dn'] + ' -- ip=' +
+    req.headers['x-real-ip']);
   res.setHeader('Content-Type', 'text/html;charset=UTF-8');
   res.statusCode = 200;
   res.write('<html><head>');

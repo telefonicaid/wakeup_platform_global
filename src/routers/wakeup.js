@@ -57,6 +57,12 @@ function processWakeUpQuery(paramsString, request, response, cb) {
     ' network (' + wakeup_data.mcc + '-' + wakeup_data.mnc + ' | ' +
       wakeup_data.netid + ')');
 
+  log.info(Date.now() + ' -- ' + request.headers['x-tracking-id'] +
+    ' -- wakeup -- ' + request.headers['x-client-cert-dn'] + ' -- ' +
+    wakeup_data.mcc + ' -- ' + wakeup_data.mnc + ' -- ' + wakeup_data.netid +
+    ' -- ' + wakeup_data.ip + ':' + wakeup_data.port + ' -- ' +
+    wakeup_data.protocol + ' -- ' + request.headers['x-real-ip']);
+
   response.statusCode = 200;
   response.write('Accepted');
 
