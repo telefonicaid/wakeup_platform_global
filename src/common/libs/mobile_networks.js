@@ -186,6 +186,10 @@ module.exports = (function mobile_networks() {
       } else {
         disableNetwork(networkName);
       }
-    }
+    },
+    
+    getNetworkStatuses: function() {
+        // TODO
+    } 
   };
 })();
