@@ -30,9 +30,14 @@ version.info:
 	@$(GIT) describe --all --always > src/version.info
 	@echo " - Version = " `cat src/version.info`
 
-clean: clean_global clean_src clean_tests
+clean: clean_config clean_global clean_src clean_tests
 	@echo "Cleaning ..."
 	@rm -rf output
+
+clean_config:
+	@echo "Cleaning generated config files ..."
+	@rm -f src/operators.json
+	@rm -f src/networks.json
 
 clean_src:
 	@echo "Cleaning common src resources ..."
@@ -49,8 +54,20 @@ clean_tests:
 	@echo "Cleaning tests auxiliar files ..."
 	@rm -rf tests/node_modules
 
-build: version.info build_src build_global
+build: version.info build_config build_src build_global
 	@echo "Building ..."
+
+build_config:
+	@echo "Generating operators file ..."
+	@cd utils; ./generate_operators_configfile.sh
+	@mv utils/operators.json src/operators.json
+	@echo "Done!"
+
+	@echo "Generating networks file ..."
+	@echo "{" > src/networks.json
+	@echo '  "214-07": { "host": "http://localhost:9000", "range": "10.0.0.0/8", "network": "214-07", "offline": true }' >> src/networks.json
+	@echo "}" >> src/networks.json
+	@echo "Done!"
 
 build_src:
 	@echo "Updating dependencies (please, wait ...)"

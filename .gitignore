@@ -4,3 +4,5 @@ shared_libs
 version.info
 shared_*.js
 output
+operators.json
+networks.json

@@ -20,42 +20,40 @@ function WU_Global_Server() {
 
 WU_Global_Server.prototype = {
   onWakeUpCommand: function(wakeupdata) {
-    function onNetworkChecked(error, networkdata) {
+    if (!wakeupdata.netid) {
+      wakeupdata.netid =
+        mn.getNetworkIDForMCCMNC(wakeupdata.mcc, wakeupdata.mnc);
+    }
+    var networkdata = mn.getNetworkForIP(wakeupdata.netid, wakeupdata.ip);
+
+    if (networkdata.error) {
+      log.error('Bad network: ' + networkdata.error);
+      return;
+    }
+
+    var URL = networkdata.net.host + '/wakeup?ip=' + wakeupdata.ip +
+      '&port=' + wakeupdata.port;
+    if (wakeupdata.proto) {
+      URL += '&proto=' + wakeupdata.proto;
+    }
+    log.info('Sending wakeup query to: ' + URL);
+
+    request({
+      url: URL,
+      headers: {
+        'x-real-ip': wakeupdata.headers['x-real-ip'],
+        'x-forwarded-for': wakeupdata.headers['x-forwarded-for'],
+        'x-client-cert-dn': wakeupdata.headers['x-client-cert-dn'],
+        'x-client-cert-verified': wakeupdata.headers['x-client-cert-verified']
+      }
+    }, function(error, resp, body) {
       if (error) {
-        log.error('Bad network: ' + error);
+        log.error('Local node connection error: ' + error);
         return;
       }
-      var URL = networkdata.host + '/wakeup?ip=' + wakeupdata.ip +
-        '&port=' + wakeupdata.port;
-      if (wakeupdata.proto) {
-        URL += '&proto=' + wakeupdata.proto;
-      }
-      log.info('Sending wakeup query to: ' + URL);
-
-      request({
-        url: URL,
-        headers: {
-          'x-real-ip': wakeupdata.headers['x-real-ip'],
-          'x-forwarded-for': wakeupdata.headers['x-forwarded-for'],
-          'x-client-cert-dn': wakeupdata.headers['x-client-cert-dn'],
-          'x-client-cert-verified': wakeupdata.headers['x-client-cert-verified']
-        }
-      }, function(error, resp, body) {
-        if (error) {
-          log.error('Local node connection error: ' + error);
-          return;
-        }
-        log.info('Notification delivered to local node ! - Response: (' +
-          resp.statusCode + ') # ' + body);
-      });
-    }
-
-    if (wakeupdata.netid) {
-      mn.checkNetwork(wakeupdata.netid, wakeupdata.ip, onNetworkChecked);
-    } else {
-      mn.checkNetwork({mcc: wakeupdata.mcc, mnc: wakeupdata.mnc},
-        wakeupdata.ip, onNetworkChecked);
-    }
+      log.info('Notification delivered to local node ! - Response: (' +
+        resp.statusCode + ') # ' + body);
+    });
   },
 
   start: function() {
