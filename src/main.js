@@ -36,11 +36,12 @@ WU_Global_Server.prototype = {
     if (wakeupdata.proto) {
       URL += '&proto=' + wakeupdata.proto;
     }
-    log.info('Sending wakeup query to: ' + URL);
+    log.debug('Sending wakeup query to: ' + URL);
 
     request({
       url: URL,
       headers: {
+        'x-tracking-id': wakeupdata.headers['x-tracking-id'],
         'x-real-ip': wakeupdata.headers['x-real-ip'],
         'x-forwarded-for': wakeupdata.headers['x-forwarded-for'],
         'x-client-cert-dn': wakeupdata.headers['x-client-cert-dn'],
@@ -48,11 +49,12 @@ WU_Global_Server.prototype = {
       }
     }, function(error, resp, body) {
       if (error) {
-        log.error('Local node connection error: ' + error);
+        log.info(Date.now() + ' -- ' + wakeupdata.headers['x-tracking-id'] +
+          ' -- ' + JSON.stringify(error));
         return;
       }
-      log.info('Notification delivered to local node ! - Response: (' +
-        resp.statusCode + ') # ' + body);
+      log.info(Date.now() + ' -- ' + wakeupdata.headers['x-tracking-id'] +
+          ' -- ' + resp.statusCode + ' -- ' + body);
     });
   },
 

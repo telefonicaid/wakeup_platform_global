@@ -18,6 +18,10 @@ module.exports.info = {
 };
 
 module.exports.entrypoint = function netInfo(parsedURL, body, req, res) {
+    // <tracking-id> -- about -- <DN=Name> -- <external-ip>
+  	log.info(Date.now() + ' -- ' + req.headers['x-tracking-id'] +
+    	' -- netinfo/v1 -- ' + req.headers['x-client-cert-dn'] + ' -- ip=' +
+    req.headers['x-real-ip']);
     res.setHeader('Content-Type', 'application/json');
     res.statusCode = 200;
     res.write(JSON.stringify(mn.getNetworkStatuses() || {}));
