@@ -8,7 +8,7 @@
  */
 
 var log = require('../shared_libs/logger'),
-    mn = require('../../common/libs/mobile_networks.js');
+    mn = require('../../libs/mobile_networks.js');
 
 module.exports.info = {
     name: 'netInfo',
