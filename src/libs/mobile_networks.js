@@ -78,12 +78,6 @@ var mn = function mobile_networks(networksPath) {
         disableNetwork(networkName);
       }
     },
-
-    // Returns network information which is periodically updated for
-    // down wakeup nodes
-    getNetworkStatuses: function() {
-        // TODO
-    }
   };
 };
 
