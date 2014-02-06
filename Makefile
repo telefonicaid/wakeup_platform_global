@@ -30,9 +30,13 @@ version.info:
 	@$(GIT) describe --all --always > src/version.info
 	@echo " - Version = " `cat src/version.info`
 
-clean: clean_global clean_src clean_tests
+clean: clean_config clean_global clean_src clean_tests
 	@echo "Cleaning ..."
 	@rm -rf output
+
+clean_config:
+	@echo "Cleaning generated config files ..."
+	@rm -f src/networks.json
 
 clean_src:
 	@echo "Cleaning common src resources ..."
@@ -49,8 +53,15 @@ clean_tests:
 	@echo "Cleaning tests auxiliar files ..."
 	@rm -rf tests/node_modules
 
-build: version.info build_src build_global
+build: version.info build_config build_src build_global
 	@echo "Building ..."
+
+build_config:
+	@echo "Generating networks file ..."
+	@echo "{" > src/networks.json
+	@echo '  "214-07": { "host": "http://localhost:9000", "range": "10.0.0.0/8", "network": "214-07", "offline": true }' >> src/networks.json
+	@echo "}" >> src/networks.json
+	@echo "Done!"
 
 build_src:
 	@echo "Updating dependencies (please, wait ...)"
@@ -72,7 +83,7 @@ install: build
 check_style:
 	@echo "Checking code style rules ..."
 	@$(GJSLINT) --disable 210,217,220,225 -r src -e node_modules
-	@$(GJSLINT) --disable 210,217,220,225 -r tests -e node_modules -x pre_tests.js,post_tests.js
+	@$(GJSLINT) --disable 210,217,220,225 -r tests -e node_modules
 
 fix_style:
 	@echo "Fixing code style rules ..."

@@ -4,3 +4,4 @@ shared_libs
 version.info
 shared_*.js
 output
+networks.json
