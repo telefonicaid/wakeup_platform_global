@@ -7,8 +7,8 @@
  * Guillermo López Leal <gll at tid dot es>
  */
 
-require('./configuration.js');
-var mn = require('../../../src/libs/mobile_networks'),
+var mn = require('../../../src/libs/mobile_networks')(
+                 '../../tests/libs/unit/networks_test.json'),
     assert = require('assert'),
     vows = require('vows'),
     net = require('net');
@@ -35,186 +35,99 @@ function checkRanges(range) {
 }
 
 vows.describe('Mobile Networks tests').addBatch({
-  'Getting invalid operator': {
-    topic: function() {
-      mn.getOperator({mcc: '000', mnc: '00'}, this.callback);
-    },
-    'Error returned': function(err, data) {
-      assert.isNotNull(err);
-    }
-  },
-
-  'Getting invalid operator (Bad MNC)': {
-    topic: function() {
-      mn.getOperator({mcc: '000', bad: '00'}, this.callback);
-    },
-    'Error returned': function(err, data) {
-      assert.isNotNull(err);
-    }
-  },
-
-  'Getting invalid operator (Bad MCC)': {
-    topic: function() {
-      mn.getOperator({bad: '000', mnc: '00'}, this.callback);
-    },
-    'Error returned': function(err, data) {
-      assert.isNotNull(err);
+  'Getting invalid network': {
+    'Error returned': function() {
+      var net = mn.getNetworkForIP(mn.getNetworkIDForMCCMNC('000', '00'), '');
+      assert.isString(net.error);
     }
   },
 
   'Getting invalid operator (Bad object)': {
-    topic: function() {
-      mn.getOperator('', this.callback);
-    },
-    'Error returned': function(err, data) {
-      assert.isNotNull(err);
+    'Error returned': function() {
+      var net = mn.getNetworkForIP('', '');
+      assert.isString(net.error);
     }
   },
 
   'Getting invalid network': {
-    topic: function() {
-      mn.getNetwork('networkbad', this.callback);
-    },
-    'Error returned': function(err, data) {
-      assert.isNotNull(err);
-    }
-  },
-
-  'Getting invalid network (bad parameter)': {
-    topic: function() {
-      mn.getNetwork('networkbad', this.callback);
-    },
-    'Error returned': function(err, data) {
-      assert.isNotNull(err);
-    }
-  },
-
-  'Getting operator data': {
-    topic: function() {
-      mn.getOperator({mcc: '001', mnc: '01'}, this.callback);
-    },
-    'No error returned': function(err, data) {
-      assert.isNull(err);
-    },
-    'Operator data returned is an object': function(err, data) {
-      assert.isObject(data);
-    },
-    'Operator data returned has a country': function(err, data) {
-      assert.isString(data.country);
-    },
-    'Operator data returned has an operator name': function(err, data) {
-      assert.isString(data.operator);
-    },
-    'Operator data returned has mccmnc data': function(err, data) {
-      assert.isString(data.mccmnc);
-    },
-    'Operator defaultNetwork, if exists is an string': function(err, data) {
-      if (data.defaultNetwork) {
-        assert.isString(data.defaultNetwork);
-      } else {
-        assert.isTrue(true);
-      }
-    }
-  },
-
-  'Getting default network data': {
-    topic: function() {
-      mn.getNetwork({mcc: '001', mnc: '01'}, this.callback);
-    },
-    'No error returned': function(err, data) {
-      assert.isNull(err);
-    },
-    'Network has a host': function(err, data) {
-      assert.isString(data.host);
-    },
-    'Network has a defined range': function(err, data) {
-      checkRanges(data.range);
-    },
-    'Network has a parent network id': function(err, data) {
-      assert.isString(data.network);
+    'Error returned': function() {
+      var net = mn.getNetworkForIP('networkbad', '');
+      assert.isString(net.error);
     }
   },
 
   'Getting network data': {
-    topic: function() {
-      mn.getNetwork('network2-1-1b', this.callback);
+    'No error returned': function() {
+      var data = mn.getNetworkForIP('network2-1-1b', '10.1.2.3');
+      assert.isUndefined(data.error);
     },
-    'No error returned': function(err, data) {
-      assert.isNull(err);
-    },
-    'Network has a host': function(err, data) {
+    'Network has a host': function() {
+      var data = mn.getNetworkForIP('network2-1-1b', '10.1.2.3');
       assert.isString(data.host);
     },
-    'Network has a defined range': function(err, data) {
+    'Network has a defined range': function() {
+      var data = mn.getNetworkForIP('network2-1-1b', '10.1.2.3');
       checkRanges(data.range);
     },
-    'Network has a parent network id': function(err, data) {
+    'Network has a parent network id': function() {
+      var data = mn.getNetworkForIP('network2-1-1b', '10.1.2.3');
       assert.isString(data.network);
     }
   },
 
   'Check Network IP range (in Range 1)': {
-    topic: function() {
-      mn.checkNetwork('network1-1-1', '10.1.2.3', this.callback);
+    'No error returned': function() {
+      var data = mn.getNetworkForIP('network1-1-1', '10.1.2.3');
+      assert.isUndefined(data.error);
     },
-    'No error returned': function(err, data) {
-      assert.isNull(err);
-    },
-    'Network has a host': function(err, data) {
+    'Network has a host': function() {
+      var data = mn.getNetworkForIP('network1-1-1', '10.1.2.3');
       assert.isString(data.host);
     },
-    'Network has a defined range': function(err, data) {
+    'Network has a defined range': function() {
+      var data = mn.getNetworkForIP('network1-1-1', '10.1.2.3');
       checkRanges(data.range);
     },
-    'Network has a parent network id': function(err, data) {
+    'Network has a parent network id': function() {
+      var data = mn.getNetworkForIP('network1-1-1', '10.1.2.3');
       assert.isString(data.network);
     }
   },
 
   'Check Network IP range (in Range 2)': {
-    topic: function() {
-      mn.checkNetwork('network1-1-1', '192.168.1.3', this.callback);
+    'No error returned': function() {
+      var data = mn.getNetworkForIP('network1-1-1', '192.168.1.3');
+      assert.isUndefined(data.error);
     },
-    'No error returned': function(err, data) {
-      assert.isNull(err);
-    },
-    'Network has a host': function(err, data) {
+    'Network has a host': function() {
+      var data = mn.getNetworkForIP('network1-1-1', '192.168.1.3');
       assert.isString(data.host);
     },
-    'Network has a defined range': function(err, data) {
+    'Network has a defined range': function() {
+      var data = mn.getNetworkForIP('network1-1-1', '192.168.1.3');
       checkRanges(data.range);
     },
-    'Network has a parent network id': function(err, data) {
+    'Network has a parent network id': function() {
+      var data = mn.getNetworkForIP('network1-1-1', '192.168.1.3');
       assert.isString(data.network);
     }
   },
 
   'Check Network IP range (Out of range)': {
-    topic: function() {
-      mn.checkNetwork('network1-1-1', '192.168.2.10', this.callback);
-    },
-    'Error returned': function(err, data) {
+    'Error returned': function() {
+      var data = mn.getNetworkForIP('network1-1-1', '192.168.2.10');
       assert.isNotNull(data);
     }
   },
 
   'Get all networks': {
-    topic: function() {
-      mn.getNetworksWithLocalNode(this.callback);
+    'No error is returned': function() {
+      var data = mn.getAllNetworks();
+      assert.isObject(data);
     },
-    'No error is returned': function(err, data) {
-      assert.isNull(err);
-    },
-    'Networks array returned': function(err, data) {
-      assert.isArray(data);
-    },
-    'If some network is returned the payload is correct': function(err, data) {
-      if (data.length > 0) {
-        assert.isString(data[0].name);
-        assert.isString(data[0].info);
-      } else {
-        assert.isTrue(true);
-      }
+    'Networks array returned': function() {
+      var data = mn.getAllNetworks();
+      assert.isObject(data);
     }
   }
 }).export(module);

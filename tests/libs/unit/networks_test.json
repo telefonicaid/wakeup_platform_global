@@ -1,0 +1,35 @@
+{
+  "214-07": {
+    "host": "http://localhost:9000",
+    "range": "10.0.0.0/8",
+    "network": "214-07",
+    "offline": true
+    },
+
+  "000-00": "BAD OPERATOR, NO JSON DATA",
+  "networkbad": "BAD NETWORK, NO JSON DATA",
+
+  "network1-1-1": {
+    "host": "http://10.1.1.1:9000",
+    "range": ["10.0.0.0/8","192.168.1.0/24"],
+    "network": "001-01"
+  },
+
+  "network1-2-1": {
+    "host": "http://10.1.2.1:9000",
+    "range": "10.0.0.0/8",
+    "network": "001-02"
+  },
+
+  "network2-1-1": {
+    "host": "http://10.2.1.1:9000",
+    "range": "10.0.0.0/8",
+    "network": "002-01"
+  },
+
+  "network2-1-1b": {
+    "host": "http://10.2.1.1:9001",
+    "range": "10.0.0.0/8",
+    "network": "002-01"
+  }
+}

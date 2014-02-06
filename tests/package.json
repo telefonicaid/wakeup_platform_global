@@ -25,8 +25,7 @@
     "vows": "0.7.x",
     "request": "2.27.x",
     "complexity-report": "1.0.x",
-    "async": "0.2.x",
-    "redis": "0.9.x"
+    "async": "0.2.x"
   },
   "engines": {
     "node": "0.10.x"
@@ -37,7 +36,7 @@
   },
   "scripts": {
     "test": "npm run-script test_libs ; npm run-script test_unit ; npm run-script test_functional",
-    "test_libs": "./libs/unit/pre_tests.js ; ./node_modules/.bin/vows libs/unit/test_*.js -i --spec ; ./libs/unit/post_tests.js",
+    "test_libs": "./node_modules/.bin/vows libs/unit/test_*.js -i --spec",
     "test_unit": "./node_modules/.bin/vows unit/test_*.js -i --spec",
     "test_functional": "./node_modules/.bin/vows functional/test_*.js -i --spec",
     "start": "cd ../; ./run_global &"
