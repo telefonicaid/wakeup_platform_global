@@ -21,8 +21,9 @@ module.exports.entrypoint = function netInfo(parsedURL, body, req, res) {
   // <tracking-id> -- about -- <DN=Name> -- <external-ip>
   log.info(Date.now() + ' -- ' + req.headers['x-tracking-id'] +
     ' -- netinfo/v1 -- ' + req.headers['x-client-cert-dn'] + ' -- ip=' +
-    req.headers['x-real-ip']);  var networks = mn.getAllNetworks();
+    req.headers['x-real-ip']);
 
+  var networks = mn.getAllNetworks();
   var netids = Object.keys(networks);
   var result = [];
 
