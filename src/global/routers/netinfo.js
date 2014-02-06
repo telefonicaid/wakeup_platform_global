@@ -7,7 +7,8 @@
  * Guillermo López Leal <gll at tid dot es>
  */
 
-var log = require('../shared_libs/logger');
+var log = require('../shared_libs/logger'),
+    mn = require('../../common/libs/mobile_networks.js');
 
 module.exports.info = {
     name: 'netInfo',
@@ -19,5 +20,5 @@ module.exports.info = {
 module.exports.entrypoint = function netInfo(parsedURL, body, req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.statusCode = 200;
-    res.write(JSON.stringify(process.netinfo || {}));
+    res.write(JSON.stringify(mn.getNetworkStatuses() || {}));
 };
