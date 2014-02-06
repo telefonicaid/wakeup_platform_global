@@ -30,7 +30,7 @@ version.info:
 	@$(GIT) describe --all --always > src/version.info
 	@echo " - Version = " `cat src/version.info`
 
-clean: clean_checker clean_global clean_src clean_tests
+clean: clean_global clean_src clean_tests
 	@echo "Cleaning ..."
 	@rm -rf output
 
@@ -40,22 +40,16 @@ clean_src:
 
 clean_global:
 	@echo "Cleaning global server instance ..."
-	@rm -f src/global/version.info
-	@rm -rf src/global/shared_libs
-	@rm -f src/global/routers/shared*
-	@find . -name "*log" -exec rm -f {} \;
-
-clean_checker:
-	@echo "Cleaning checker server instance ..."
-	@rm -f src/checker/version.info
-	@rm -rf src/checker/shared_libs
+	@rm -f src/version.info
+	@rm -rf src/shared_libs
+	@rm -f src/routers/shared*
 	@find . -name "*log" -exec rm -f {} \;
 
 clean_tests:
 	@echo "Cleaning tests auxiliar files ..."
 	@rm -rf tests/node_modules
 
-build: version.info build_src build_global build_checker
+build: version.info build_src build_global
 	@echo "Building ..."
 
 build_src:
@@ -64,24 +58,16 @@ build_src:
 
 build_global: version.info build_src
 	@echo "Building global server instance ..."
-	@cp -rfl common/libs src/global/shared_libs
-	@cp -rfl src/common/libs/* src/global/shared_libs
-	@cd common/routers/; for r in `ls *js`; do ln -f $$r ../../src/global/routers/shared_$$r; done;
-
-build_checker: version.info build_src
-	@echo "Building checker server instance ..."
-	@cp -rfl common/libs src/checker/shared_libs
-	@cp -rfl src/common/libs/* src/checker/shared_libs
+	@cp -rfl common/libs src/shared_libs
+	@cd common/routers/; for r in `ls *js`; do ln -f $$r ../../src/routers/shared_$$r; done;
 
 install: build
 	@echo "Putting global server into output directory ..."
 	@mkdir -p output
 	@cp -rfl src/* output/
 	@find output -name README.md -exec rm {} \;
-	@echo "cd global; node start.js $1" > output/run_global.sh
-	@echo "cd checker; node start.js $1" > output/run_checker.sh
+	@echo "node start.js $1" > output/run_global.sh
 	@chmod +x output/run_global.sh
-	@chmod +x output/run_checker.sh
 
 check_style:
 	@echo "Checking code style rules ..."
@@ -104,7 +90,7 @@ tests_global: build tests_environment
 	@echo "Executing libs unit tests ..."
 	@cd tests; $(NPM) run-script test_libs
 	@echo "Launching global server ..."
-	@cd src/global; node start.js > /dev/null & echo "$$!" > ../../global.pid
+	@cd src; node start.js > /dev/null & echo "$$!" > ../global.pid
 	@echo "Executing unit tests ..."
 	@cd tests; $(NPM) run-script test
 	@echo "Killing global server ..."

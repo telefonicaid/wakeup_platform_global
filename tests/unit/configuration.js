@@ -7,4 +7,4 @@
  * Guillermo López Leal <gll at tid dot es>
  */
 
-process.configuration = require('../../src/global/config.default.json');
+process.configuration = require('../../src/config.default.json');

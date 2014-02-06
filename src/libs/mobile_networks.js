@@ -11,7 +11,7 @@
 
 var config = process.configuration,
     redis = require('redis'),
-    helpers = require('./helpers'),
+    helpers = require('../shared_libs/helpers'),
     range_check = require('range_check');
 
 module.exports = (function mobile_networks() {
