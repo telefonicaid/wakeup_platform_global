@@ -186,6 +186,12 @@ module.exports = (function mobile_networks() {
       } else {
         disableNetwork(networkName);
       }
+    },
+    
+    // Returns network information which is periodically updated for
+    // down wakeup nodes
+    getNetworkStatuses: function() {
+        // TODO
     }
   };
 })();
