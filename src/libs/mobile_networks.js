@@ -9,10 +9,51 @@
 
 'use strict';
 
-var range_check = require('range_check');
+var range_check = require('range_check'),
+    request = require('request'),
+    config = require('../shared_libs/configuration'),
+    log = require('../shared_libs/logger.js');
 
 var mn = function mobile_networks(networksPath) {
   var networks = require(networksPath);
+
+  var checkWakeup = function(URL, callback) {
+    log.debug('Checking ' + URL);
+    var options = {
+      url: URL,
+      // We need to fake this for the local wakeup to
+      // accept our query
+      headers: {
+        'x-client-cert-verified': 'SUCCESS',
+        'x-client-cert-dn': 'Wakeup_checker'
+      }
+    };
+    request(options, function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        log.debug(URL + ' success');
+        callback(true);
+      } else {
+        log.debug(URL + ' failed');
+        callback(false);
+      }
+    });
+  };
+
+  var checkNetworks = function() {
+    log.debug('checkNetworks() + ' + JSON.stringify(networks));
+    var keys = Object.keys(networks);
+    keys.forEach(function(id) {
+      if (networks[id].host) {
+        checkWakeup(networks[id].host + '/about', function(online) {
+          online ? enableNetwork(id) :
+                   disableNetwork(id);
+        });
+      }
+    });
+  };
+
+  checkNetworks();
+  setInterval(checkNetworks, config.check_interval);
 
   function getNetwork(netid) {
     var res = networks[netid];
@@ -22,11 +63,12 @@ var mn = function mobile_networks(networksPath) {
     return res;
   }
 
-  function getAllNetworks(callback) {
+  function getAllNetworks() {
     return networks;
   }
 
   function enableNetwork(networkName) {
+    log.debug('Enabling network ' + networkName);
     var net = getNetwork(networkName);
     if (net) {
       networks[networkName].offline = false;
@@ -34,6 +76,7 @@ var mn = function mobile_networks(networksPath) {
   }
 
   function disableNetwork(networkName) {
+    log.debug('Disabling network ' + networkName);
     var net = getNetwork(networkName);
     if (net) {
       networks[networkName].offline = true;
@@ -77,12 +120,6 @@ var mn = function mobile_networks(networksPath) {
       } else {
         disableNetwork(networkName);
       }
-    },
-
-    // Returns network information which is periodically updated for
-    // down wakeup nodes
-    getNetworkStatuses: function() {
-        // TODO
     }
   };
 };
