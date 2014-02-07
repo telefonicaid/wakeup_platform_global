@@ -28,13 +28,17 @@ var mn = function mobile_networks(networksPath) {
         'x-client-cert-dn': 'Wakeup_checker'
       }
     };
+    // Callback with true/false (online/offline) and the trackingID
+    // if it is set to trace between wakeups
     request(options, function(error, response, body) {
       if (!error && response.statusCode === 200) {
         log.debug(URL + ' success');
-        callback(true);
+        callback(true, response.headers['x-tracking-id']);
       } else {
         log.debug(URL + ' failed');
-        callback(false);
+        callback(false, (response && response.headers &&
+                         response.headers['x-tracking-id'])
+        );
       }
     });
   };
@@ -44,7 +48,10 @@ var mn = function mobile_networks(networksPath) {
     var keys = Object.keys(networks);
     keys.forEach(function(id) {
       if (networks[id].host) {
-        checkWakeup(networks[id].host + '/about', function(online) {
+        var toCheck = networks[id].host + '/about';
+        checkWakeup(toCheck, function(online, trackingID) {
+          log.info(Date.now() + ' -- ' + trackingID + ' -- wakeup_check -- ' +
+            id + ' -- ' + networks[id].host + ' -- ' + (online ? 'OK' : 'KO'));
           online ? enableNetwork(id) :
                    disableNetwork(id);
         });
