@@ -38,5 +38,5 @@ module.exports.entrypoint = function netInfo(parsedURL, body, req, res) {
 
   res.setHeader('Content-Type', 'application/json');
   res.statusCode = 200;
-  res.write(JSON.stringify(result));
+  res.write(JSON.stringify({ nets: result }));
 };
