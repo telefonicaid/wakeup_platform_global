@@ -30,7 +30,7 @@ version.info:
 	@$(GIT) describe --all --always > src/version.info
 	@echo " - Version = " `cat src/version.info`
 
-clean: clean_config clean_global clean_src clean_tests
+clean: clean_config clean_src clean_global clean_tests
 	@echo "Cleaning ..."
 	@rm -rf output
 
