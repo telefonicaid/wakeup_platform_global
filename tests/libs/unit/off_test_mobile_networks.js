@@ -7,6 +7,7 @@
  * Guillermo López Leal <gll at tid dot es>
  */
 
+require('./configuration');
 var mn = require('../../../src/libs/mobile_networks')(
                  '../../tests/libs/unit/networks_test.json'),
     assert = require('assert'),
