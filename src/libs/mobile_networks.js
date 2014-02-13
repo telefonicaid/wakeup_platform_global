@@ -11,7 +11,7 @@
 
 var range_check = require('range_check'),
     request = require('request'),
-    config = require('../shared_libs/configuration'),
+    config = process.configuration,
     log = require('../shared_libs/logger.js');
 
 var mn = function mobile_networks(networksPath) {
