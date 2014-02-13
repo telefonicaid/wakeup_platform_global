@@ -47,7 +47,7 @@ clean_global:
 	@rm -f src/version.info
 	@rm -rf src/shared_libs
 	@rm -f src/routers/shared*
-	@find . -name "*log" -exec rm -f {} \;
+	@find . -name "*.log" -exec rm -f {} \;
 
 clean_tests:
 	@echo "Cleaning tests auxiliar files ..."
