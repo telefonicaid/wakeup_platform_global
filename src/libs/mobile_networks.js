@@ -98,7 +98,7 @@ var mn = function mobile_networks(networksPath) {
     // Checks if the deviceip is in a valid range for the specified network
     getNetworkForIP: function(netid, deviceip) {
       if (!range_check.valid_ip(deviceip)) {
-        return { error: 'No valid device IP',  code: 400 };
+        return { error: 'No valid device IP', code: 400 };
       }
 
       var network = getNetwork(netid);

@@ -59,7 +59,7 @@ build: version.info build_config build_src build_global
 build_config:
 	@echo "Generating networks file ..."
 	@echo "{" > src/networks.json
-	@echo '  "214-07": { "host": "http://localhost:9000", "range": "10.0.0.0/8", "network": "214-07", "offline": true }' >> src/networks.json
+	@echo '  "214-07": { "host": "http://localhost:9000", "range": "10.0.0.0/8", "network": "214-07", "protocols": ["tcp","udp"], "offline": true }' >> src/networks.json
 	@echo "}" >> src/networks.json
 	@echo "Done!"
 

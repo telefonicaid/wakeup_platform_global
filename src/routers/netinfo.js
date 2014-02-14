@@ -32,6 +32,7 @@ module.exports.entrypoint = function netInfo(parsedURL, body, req, res) {
       netid: netids[i],
       mccmnc: networks[netids[i]].network,
       range: networks[netids[i]].range,
+      protocols: networks[netids[i]].protocols,
       offline: networks[netids[i]].offline
     });
   }
