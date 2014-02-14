@@ -58,7 +58,7 @@ function processWakeUpQuery(paramsString, request, response, cb) {
       mn.getNetworkIDForMCCMNC(wakeup_data.mcc, wakeup_data.mnc);
   }
 
-  // The format is OK, but the values are OK too?
+  // The format is OK, but are the values OK too?
   wakeup_data.network = mn.getNetworkForIP(wakeup_data.netid, wakeup_data.ip);
   if (wakeup_data.network.error) {
     log.error('Bad network: ' + wakeup_data.network.error);
