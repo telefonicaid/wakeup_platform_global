@@ -98,18 +98,21 @@ var mn = function mobile_networks(networksPath) {
     // Checks if the deviceip is in a valid range for the specified network
     getNetworkForIP: function(netid, deviceip) {
       if (!range_check.valid_ip(deviceip)) {
-        return { error: 'No valid device IP' };
+        return { error: 'No valid device IP', code: 400 };
       }
 
       var network = getNetwork(netid);
       if (!network) {
-        return { error: 'No network found' };
+        return { error: 'No network found', code: 404 };
       }
 
       // Client IP is out of the mobile network
       if (!range_check.in_range(deviceip, network.range)) {
-        return { error: 'Client IP (' + deviceip +
-          ') is out of the mobile network range - ' + network.range };
+        return {
+          error: 'Client IP (' + deviceip +
+            ') is out of the mobile network range - ' + network.range,
+          code: 400
+        };
       }
 
       return network;

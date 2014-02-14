@@ -9,7 +9,8 @@
 
 var log = require('../shared_libs/logger'),
     querystring = require('querystring'),
-    net = require('net');
+    net = require('net'),
+    mn = require('../libs/mobile_networks')('../networks.json');
 
 module.exports.info = {
   name: 'wakeupRouter',
@@ -43,11 +44,45 @@ function processWakeUpQuery(paramsString, request, response, cb) {
 
   // Check protocol
   if ((!wakeup_data.netid || typeof(wakeup_data.netid) !== 'string') &&
-       (!wakeup_data.mcc || !wakeup_data.mnc ||
-        isNaN(wakeup_data.mcc) || isNaN(wakeup_data.mnc))) {
+      (!wakeup_data.mcc || !wakeup_data.mnc ||
+       isNaN(wakeup_data.mcc) || isNaN(wakeup_data.mnc))) {
     log.debug('WU_ListenerHTTP_WakeUpRouter --> Bad NetID OR MCC/MNC');
     response.statusCode = 400;
     response.write('Bad parameters. Bad NetID OR MCC/MNC');
+    return;
+  }
+
+  // If no netid defined, we'll use MCC/MNC pair
+  if (!wakeup_data.netid) {
+    wakeup_data.netid =
+      mn.getNetworkIDForMCCMNC(wakeup_data.mcc, wakeup_data.mnc);
+  }
+
+  // The format is OK, but are the values OK too?
+  wakeup_data.network = mn.getNetworkForIP(wakeup_data.netid, wakeup_data.ip);
+  if (wakeup_data.network.error) {
+    log.error('Bad network: ' + wakeup_data.network.error);
+    response.statusCode = wakeup_data.network.code;
+    response.write(wakeup_data.network.error);
+    return;
+  }
+
+  // Network found :) - Checking network status
+  if (wakeup_data.network.offline) {
+    var msg = 'Error, network ' + wakeup_data.netid + ' is offline now';
+    log.error(msg);
+    response.statusCode = 503;
+    response.write(msg);
+    return;
+  }
+  // If the network informs about supported protocols, an extra check is done :)
+  if (wakeup_data.proto && wakeup_data.network.protocols &&
+      wakeup_data.network.protocols.indexOf(wakeup_data.proto) == -1) {
+    var msg = 'Error, protocol ' + wakeup_data.proto + ' is not accepted by ' +
+              wakeup_data.netid + ' network';
+    log.error(msg);
+    response.statusCode = 400;
+    response.write(msg);
     return;
   }
 
