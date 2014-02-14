@@ -67,6 +67,15 @@ function processWakeUpQuery(paramsString, request, response, cb) {
     return;
   }
 
+  // Network found :) - Checking network status
+  if (wakeup_data.network.offline) {
+    var msg = 'Error, network ' + wakeup_data.netid + ' is offline now';
+    log.error(msg);
+    response.statusCode = 503;
+    response.write(msg);
+    return;
+  }
+
   // All Ok, we can wakeup the device !
   log.debug('WU_ListenerHTTP_WakeUpRouter --> WakeUp IP = ' + wakeup_data.ip +
     ':' + wakeup_data.port +
