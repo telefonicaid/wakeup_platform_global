@@ -9,7 +9,8 @@
 
 var log = require('../shared_libs/logger'),
     querystring = require('querystring'),
-    net = require('net');
+    net = require('net'),
+    mn = require('../libs/mobile_networks')('../networks.json');
 
 module.exports.info = {
   name: 'wakeupRouter',
@@ -48,6 +49,21 @@ function processWakeUpQuery(paramsString, request, response, cb) {
     log.debug('WU_ListenerHTTP_WakeUpRouter --> Bad NetID OR MCC/MNC');
     response.statusCode = 400;
     response.write('Bad parameters. Bad NetID OR MCC/MNC');
+    return;
+  }
+
+  // If no netid defined, we'll use MCC/MNC pair
+  if (!wakeup_data.netid) {
+    wakeup_data.netid =
+      mn.getNetworkIDForMCCMNC(wakeup_data.mcc, wakeup_data.mnc);
+  }
+
+  // The format is OK, but the values are OK too?
+  wakeup_data.network = mn.getNetworkForIP(wakeup_data.netid, wakeup_data.ip);
+  if (wakeup_data.network.error) {
+    log.error('Bad network: ' + wakeup_data.network.error);
+    response.statusCode = wakeup_data.network.code;
+    response.write(wakeup_data.network.error);
     return;
   }
 

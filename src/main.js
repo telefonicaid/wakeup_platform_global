@@ -10,7 +10,6 @@
 var config = require('./shared_libs/configuration'),
     log = require('./shared_libs/logger'),
     plugins_loader = require('./shared_libs/plugins_loader'),
-    mn = require('./libs/mobile_networks')('../networks.json'),
     request = require('request');
     ListenerHttp = require('./shared_libs/listener_http').ListenerHttp;
 
@@ -20,18 +19,7 @@ function WU_Global_Server() {
 
 WU_Global_Server.prototype = {
   onWakeUpCommand: function(wakeupdata) {
-    if (!wakeupdata.netid) {
-      wakeupdata.netid =
-        mn.getNetworkIDForMCCMNC(wakeupdata.mcc, wakeupdata.mnc);
-    }
-    var networkdata = mn.getNetworkForIP(wakeupdata.netid, wakeupdata.ip);
-
-    if (networkdata.error) {
-      log.error('Bad network: ' + networkdata.error);
-      return;
-    }
-
-    var URL = networkdata.host + '/wakeup?ip=' + wakeupdata.ip +
+    var URL = wakeupdata.network.host + '/wakeup?ip=' + wakeupdata.ip +
       '&port=' + wakeupdata.port;
     if (wakeupdata.proto) {
       URL += '&proto=' + wakeupdata.proto;
