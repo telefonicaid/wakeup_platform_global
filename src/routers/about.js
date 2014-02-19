@@ -16,7 +16,8 @@ module.exports.info = {
   alias: [
     ''            // No path => default router
   ],
-  description: 'This module shows the about page to the client'
+  description: 'This module shows the about page to the client',
+  unsafe: true
 };
 
 module.exports.entrypoint = function router_about(parsedURL, body, req, res) {
