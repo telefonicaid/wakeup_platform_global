@@ -8,8 +8,7 @@
 GIT  ?= git
 NODE ?= node
 NPM ?= npm
-GJSLINT ?= gjslint
-FIXJSSTYLE ?= fixjsstyle
+JSHINT ?= jshint
 
 .PHONY = about dev all version.info
 .PHONY = clean clean_global
@@ -82,13 +81,8 @@ install: build
 
 check_style:
 	@echo "Checking code style rules ..."
-	@$(GJSLINT) --disable 210,217,220,225 -r src -e node_modules
-	@$(GJSLINT) --disable 210,217,220,225 -r tests -e node_modules
-
-fix_style:
-	@echo "Fixing code style rules ..."
-	@$(FIXJSSTYLE) --disable 210,217,220,225 -r src -e node_modules
-	@$(FIXJSSTYLE) --disable 210,217,220,225 -r tests -e node_modules
+	@$(JSHINT) src -e node_modules
+	@$(JSHINT) tests -e node_modules
 
 tests: build tests_environment tests_global
 	@echo "Executing tests ..."

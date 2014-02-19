@@ -1,4 +1,3 @@
-/* jshint node: true */
 /**
  * Wake Up Platform
  * (c) Telefonica Digital, 2014 - All rights reserved
@@ -7,20 +6,21 @@
  * Guillermo López Leal <gll at tid dot es>
  */
 
-global = require('./main');
-var server = new global.WU_Global_Server();
+'use strict';
+
+var gl = require('./main');
+var server = new gl.WUGlobalServer();
 server.start();
 
 /////////////////////////
 // On close application
 function onClose() {
-  console.info('Received interruption (2) signal');
-  server.stop();
-
+    console.info('Received interruption (2) signal');
+    server.stop();
 }
 function onKill() {
-  console.info('Received termination (15) signal');
-  server.stop();
+    console.info('Received termination (15) signal');
+    server.stop();
 }
 process.on('SIGINT', onClose);    // 2
 process.on('SIGTERM', onKill);    // 15
