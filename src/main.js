@@ -74,7 +74,7 @@ WUGlobalServer.prototype = {
         setTimeout(function() {
             log.info('WakeUp global server - Bye !');
             process.exit(0);
-        }, 10000);
+        }, 1000);
     }
 };
 

@@ -1,8 +1,8 @@
 {
-  "name": "wakeup_local",
+  "name": "wakeup_global",
   "version": "0.0.1",
   "author": "Telefónica I+D. 2013",
-  "description": "WakeUp platform: Local server",
+  "description": "WakeUp platform: Global server",
   "contributors": [
     {
       "name": "Fernando Rodriguez Sela",
@@ -35,10 +35,9 @@
     "url": "http://www.gnu.org/licenses/agpl-3.0.html"
   },
   "scripts": {
-    "test": "npm run-script test_libs ; npm run-script test_unit ; npm run-script test_functional",
+    "test": "npm run-script test_libs ; npm run-script test_unit",
     "test_libs": "./node_modules/.bin/vows libs/unit/test_*.js -i --spec",
     "test_unit": "./node_modules/.bin/vows unit/test_*.js -i --spec",
-    "test_functional": "./node_modules/.bin/vows functional/test_*.js -i --spec",
     "start": "cd ../; ./run_global &"
   }
 }
