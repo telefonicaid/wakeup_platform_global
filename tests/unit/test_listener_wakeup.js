@@ -44,7 +44,7 @@ vows.describe('Global node WakeUp tests').addBatch({
         }
     },
 
-    'With Network ID': {
+    'With DOWN wakeup, Network ID': {
         topic: function sendWakeupNetworkID() {
             var self = this;
             var body = 'ip=10.0.0.1&port=1234&netid=network2-1-1';
@@ -67,15 +67,15 @@ vows.describe('Global node WakeUp tests').addBatch({
         },
 
         'Check status code': function(err, res/*, body*/) {
-            assert.equal(res.statusCode, 200);
+            assert.equal(res.statusCode, 503);
         },
         'Received data has the expected format': function(err, res, body) {
             assert.isString(body);
-            assert.equal(body.substr(0, 8), 'Accepted');
+            assert.equal(body.substr(0, 14), 'Error, network');
         }
     },
 
-    'With MCC/MNC': {
+    'With DOWN wakeup, MCC/MNC': {
         topic: function sendWakeupMCCMNC() {
             var self = this;
             var body = 'ip=10.0.0.1&port=1234&mcc=214&mnc=07';
@@ -98,11 +98,11 @@ vows.describe('Global node WakeUp tests').addBatch({
         },
 
         'Check status code': function(err, res/*, body*/) {
-            assert.equal(res.statusCode, 200);
+            assert.equal(res.statusCode, 503);
         },
         'Received data has the expected format': function(err, res, body) {
             assert.isString(body);
-            assert.equal(body.substr(0, 8), 'Accepted');
+            assert.equal(body.substr(0, 14), 'Error, network');
         }
     }
 }).export(module);
