@@ -8,7 +8,6 @@
 GIT  ?= git
 NODE ?= node
 NPM ?= npm
-JSHINT ?= jshint
 
 .PHONY = about dev all version.info
 .PHONY = clean clean_global
@@ -32,6 +31,7 @@ version.info:
 clean: clean_config clean_src clean_global clean_tests
 	@echo "Cleaning ..."
 	@rm -rf output
+	@rm -rf node_modules
 
 clean_config:
 	@echo "Cleaning generated config files ..."
@@ -82,8 +82,9 @@ install: build
 
 check_style:
 	@echo "Checking code style rules ..."
-	@$(JSHINT) src -e node_modules
-	@$(JSHINT) tests -e node_modules
+	@npm install jshint > /dev/null 2> /dev/null
+	@./node_modules/jshint/bin/jshint src -e node_modules
+	@./node_modules/jshint/bin/jshint tests -e node_modules
 
 tests: build tests_environment tests_global
 	@echo "Executing tests ..."
