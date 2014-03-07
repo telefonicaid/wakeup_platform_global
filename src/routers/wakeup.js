@@ -25,7 +25,8 @@ function processWakeUpQuery(paramsString, request, response, cb) {
 
     // Check request ...
     if (!paramsString) {
-        log.debug('WU_ListenerHTTP_WakeUpRouter --> No required data provided');
+        log.info('WU_ListenerHTTP_WakeUpRouter --> No required data provided' +
+            paramsString);
         response.statusCode = 400;
         response.write('Bad parameters. No required data provided');
         return;
@@ -37,7 +38,7 @@ function processWakeUpQuery(paramsString, request, response, cb) {
         isNaN(wakeupData.port) ||       // The port is a Number
         wakeupData.port <= 0 || wakeupData.port > 65535 // Port in a valid range
     ) {
-        log.debug('WU_ListenerHTTP_WakeUpRouter --> Bad IP/Port');
+        log.info('WU_ListenerHTTP_WakeUpRouter --> Bad IP/Port' + paramsString);
         response.statusCode = 400;
         response.write('Bad parameters. Bad IP/Port');
         return;
@@ -47,7 +48,8 @@ function processWakeUpQuery(paramsString, request, response, cb) {
     if ((!wakeupData.netid || typeof(wakeupData.netid) !== 'string') &&
         (!wakeupData.mcc || !wakeupData.mnc ||
          isNaN(wakeupData.mcc) || isNaN(wakeupData.mnc))) {
-        log.debug('WU_ListenerHTTP_WakeUpRouter --> Bad NetID OR MCC/MNC');
+        log.info('WU_ListenerHTTP_WakeUpRouter --> Bad NetID OR MCC/MNC' +
+            paramsString);
         response.statusCode = 400;
         response.write('Bad parameters. Bad NetID OR MCC/MNC');
         return;
