@@ -14,6 +14,8 @@ var config = require('./shared_libs/configuration'),
     request = require('request'),
     ListenerHttp = require('./shared_libs/listener_http').ListenerHttp;
 
+log.setParams(config.log);
+
 function WUGlobalServer() {
     this.httpListeners = [];
 }
