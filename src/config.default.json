@@ -14,5 +14,5 @@
     "key": "",
     "cert": ""
   },
-  "checkInterval": 100
+  "checkInterval": 180000
 }
