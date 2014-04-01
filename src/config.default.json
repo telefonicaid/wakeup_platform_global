@@ -1,14 +1,7 @@
 {
-  "log4js": {
-    "appenders": [
-      {
-        "type": "file",
-        "filename": "NS_WakeUp.log",
-        "category": "WakeUp_Global"
-      },
-      { "type": "console" }
-    ],
-    "level": "ALL"
+  "log": {
+    "LOGLEVEL": 127,
+    "APPNAME": "WakeUp_Global"
   },
   "interfaces": [
     {
@@ -21,5 +14,5 @@
     "key": "",
     "cert": ""
   },
-  "checkInterval": 180000
+  "checkInterval": 100
 }
