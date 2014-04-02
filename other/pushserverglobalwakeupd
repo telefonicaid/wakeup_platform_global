@@ -1,4 +1,5 @@
-kconfig: 3 99 85
+#!/bin/bash
+#chkconfig: 3 99 85
 # pushserverglobalwakeupd - Startup script for pushserver
 # processname: pushserverglobalwakeupd
 . /etc/rc.d/init.d/functions
