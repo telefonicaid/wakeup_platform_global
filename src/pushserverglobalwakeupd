@@ -1,0 +1,63 @@
+kconfig: 3 99 85
+# pushserverglobalwakeupd - Startup script for pushserver
+# processname: pushserverglobalwakeupd
+. /etc/rc.d/init.d/functions
+#NODE="/usr/bin/node --nouse-idle-notification --max-new-space-size=2000000 --max-old-space-size=4000"
+NODE="/usr/bin/node"
+PUSH_SERVER="/opt/pdi/owd/push_server_wake_up_global/"
+CONFIGFILE="$PUSH_SERVER/config.default.json"
+OPTIONS=" start.js"
+PUSHSERVER_USER=push_server
+PUSHSERVER_GROUP=push_server
+
+start()
+{
+  echo -n $"Starting push_server..."
+  echo
+  cd $PUSH_SERVER
+  nohup $NODE $OPTIONS > /var/log/push_server/NS_WakeUp.log 2>&1 &
+  RETVAL=$?
+  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/pushserverglobalwakeupd
+  sleep 2
+echo
+}
+
+stop()
+{
+  echo -n $"Stopping push_server. "
+  #killproc -p "$PIDFILE" -d 300 /usr/bin/mongod
+  ps h -o pid -C node | tr '\n' ' ' | xargs sudo kill -9
+  RETVAL=$?
+  [ -e /var/pushglobalwakeup.socket ] && rm -f /var/pushglobalwakeup.socket
+  [ $RETVAL -eq 0 ] && { rm -f /var/lock/subsys/pushserverglobalwakeupd;success "OK"; }
+echo
+}
+
+restart () {
+    stop
+    start
+}
+
+
+
+RETVAL=0
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart|reload|force-reload)
+    restart
+    ;;
+  status)
+    status node
+    RETVAL=$?
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|status|restart|reload|force-reload} "
+    RETVAL=1
+esac
+
+exit $RETVAL
