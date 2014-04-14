@@ -11,8 +11,8 @@
 var config = require('./shared_libs/configuration'),
     log = require('./shared_libs/logger'),
     pluginsLoader = require('./shared_libs/plugins_loader'),
-    request = require('request'),
-    ListenerHttp = require('./shared_libs/listener_http').ListenerHttp;
+    ListenerHttp = require('./shared_libs/listener_http').ListenerHttp,
+    wakeupSender = require('./modules/wakeup_sender');
 
 log.setParams(config.log);
 
@@ -21,34 +21,6 @@ function WUGlobalServer() {
 }
 
 WUGlobalServer.prototype = {
-    onWakeUpCommand: function(wakeupdata) {
-        var URL = wakeupdata.network.host + '/wakeup?ip=' + wakeupdata.ip +
-          '&port=' + wakeupdata.port;
-        if (wakeupdata.proto) {
-            URL += '&proto=' + wakeupdata.proto;
-        }
-        log.debug('Sending wakeup query to: ' + URL);
-
-        request({
-            url: URL,
-            headers: {
-                'x-tracking-id': wakeupdata.headers['x-tracking-id'],
-                'x-real-ip': wakeupdata.headers['x-real-ip'],
-                'x-forwarded-for': wakeupdata.headers['x-forwarded-for'],
-                'x-client-cert-dn': wakeupdata.headers['x-client-cert-dn'],
-                'x-client-cert-verified': wakeupdata.headers['x-client-cert-verified']
-            }
-        }, function(error, resp, body) {
-            if (error) {
-                log.info(Date.now() + ' -- ' + wakeupdata.headers['x-tracking-id'] +
-                  ' -- ' + JSON.stringify(error));
-                return;
-            }
-            log.info(Date.now() + ' -- ' + wakeupdata.headers['x-tracking-id'] +
-              ' -- ' + resp.statusCode + ' -- ' + body);
-        });
-    },
-
     start: function() {
         // Start servers
         pluginsLoader.load('routers');
@@ -58,7 +30,7 @@ WUGlobalServer.prototype = {
                 config.interfaces[a].port,
                 config.interfaces[a].ssl,
                 pluginsLoader.getRouters(),
-                this.onWakeUpCommand);
+                wakeupSender.wakeup);
             this.httpListeners[a].init();
         }
 

@@ -14,5 +14,6 @@
     "key": "",
     "cert": ""
   },
-  "checkInterval": 180000
+  "checkInterval": 180000,
+  "maxSocketConnections": -1
 }
