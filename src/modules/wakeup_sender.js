@@ -10,7 +10,8 @@
 
 var http = require('http'),
     url = require('url'),
-    log = require('../shared_libs/logger');
+    log = require('../shared_libs/logger'),
+    config = process.configuration;
 
 function WakeupSender() {
 }
@@ -29,7 +30,16 @@ WakeupSender.prototype = {
           ' -- Launching query to local node at ' + URL);
       var parsedURL = url.parse(URL);
       var agent = new http.Agent();
-      agent.maxSockets = Infinity;
+      if (config.maxSocketConnections === -1) {
+        log.debug('Allowing unlimit sockets connections to local node');
+        agent.maxSockets = Infinity;
+      } else if(config.maxSocketConnections) {
+        log.debug('Allowing ' + config.maxSocketConnections +
+          ' parallel sockets to local node');
+        agent.maxSockets = config.maxSocketConnections;
+      } else {
+        log.debug('Leaving default number of sockets to local node');
+      }
       var req = http.request({
           hostname: parsedURL.hostname,
           port: parsedURL.port,
