@@ -42,6 +42,7 @@ restart () {
 
 
 RETVAL=0
+ulimit -n 64000
 case "$1" in
   start)
     start
