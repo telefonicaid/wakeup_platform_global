@@ -48,7 +48,7 @@ var mn = function mobileNetwork(networksPath) {
         var keys = Object.keys(networks);
         keys.forEach(function(id) {
             if (networks[id].host) {
-                var toCheck = networks[id].host + '/about';
+                var toCheck = networks[id].host + '/status';
                 checkWakeup(toCheck, function(online, trackingID) {
                     var on = online ? enableNetwork(id) : disableNetwork(id);
                     log.info(Date.now() + ' -- ' + trackingID +
