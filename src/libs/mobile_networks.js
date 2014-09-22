@@ -94,7 +94,7 @@ var mn = function mobileNetwork(networksPath) {
 
     return {
         getNetworkIDForMCCMNC: function(mcc, mnc) {
-            return mcc + '-' + mnc;
+            return mcc + '-' + mnc + '.default';
         },
 
         // Checks if the deviceip is in a valid range for the specified network
