@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# usage: push-wakeup-perf 0.082 430 1.2.3.4 1234 214 07
+
+interval=$1
+duration=$2
+ip=$3
+port=$4
+mcc=$5
+mnc=$6
+param="ip=$3&port=$4&mcc=$5&mnc=$6"
+server="https://wakeup-mr.srv.openwebdevice.com/wakeup/v1"
+command="/usr/bin/curl -d '$param' -k --key ./client.key --cert ./client.crt $server"
+output=$0.log
+
+total=`echo $duration/$interval | bc`
+echo "*** START `date +%d/%m/%Y\ %H:%M:%S` ***" >> $output
+echo "=> Execute test with following configuration:" >> $output
+echo "     * Request command: $command" >> $output
+echo "     * Interval between requests: $interval sec" >> $output
+echo "     * Total time to send requests: $duration sec" >> $output
+echo "     * Total number of requests: $total" >> $output
+
+echo "Execute test with following configuration:"
+echo "  * Request command: $command"
+echo "  * Interval between requests: $interval sec"
+echo "  * Total time to send requests: $duration sec"
+echo "  * Total number of requests: $total"
+echo "Sending all requests..."
+
+exec 3>&1
+{ time -p {
+    count=0
+    while [ $count -lt $total ]; do
+      let count=count+1
+      echo "=> Send request $count" >> $output
+      eval $command >> $output 2>&1 &
+      sleep $interval
+    done
+    wait
+    echo "Waiting for all requests to finish..." 1>&3
+  }
+} 2>&1 | {
+  while read name value; do
+    case $name in
+      real) time=$value ;;
+    esac
+  done
+  echo "All $total requests finished in $time secs"
+  echo "=> All $total requests finished in $time secs" >> $output
+}
+
+echo "*** STOP `date +%d/%m/%Y\ %H:%M:%S` ***" >> $output
